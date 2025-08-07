@@ -95,6 +95,42 @@ ng serve
 2. 确保所有括号正确匹配
 3. 确保没有多余的字符
 
+### 构建优化错误
+
+如果遇到类似 `Error: Optimization error [main.xxxx.js]: SyntaxError: Unexpected token: punc ({)` 的错误，这通常是由于构建工具版本不兼容或代码语法问题导致的。解决方法：
+
+1. 禁用构建优化（在 [angular.json](file:///e:/workspaces/wan-demo/frontend/angular.json) 中设置 `"optimization": false`）
+2. 确保所有TypeScript文件语法正确
+3. 检查是否有ES6+语法在不支持的环境中使用
+4. 更新或锁定依赖版本以确保兼容性
+5. 创建自定义的 terser 配置文件来处理代码压缩
+6. 分别控制脚本和样式的优化选项
+
+### CSS预算超限错误
+
+如果遇到类似 `Error: ... exceeded maximum budget` 的错误，这表示某个资源文件超出了Angular设定的大小预算。解决方法：
+
+1. 优化CSS文件，删除不必要的样式或压缩代码
+2. 增加预算限制（在 [angular.json](file:///e:/workspaces/wan-demo/frontend/angular.json) 的 budgets 部分调整 `maximumWarning` 和 `maximumError` 值）
+3. 将大型样式移到全局样式文件中
+
+### 初始包大小预算超限错误
+
+如果遇到类似 `bundle initial exceeded maximum budget` 的错误，这表示应用初始包大小超出了Angular设定的预算。解决方法：
+
+1. 增加预算限制（在 [angular.json](file:///e:/workspaces/wan-demo/frontend/angular.json) 中调整 `initial` 类型的预算）
+2. 启用生产构建优化（`optimization`、`buildOptimizer` 等）
+3. 优化代码，移除不必要的功能和依赖
+4. 使用摇树优化（tree-shaking）移除未使用的代码
+
+### TypeScript类型错误
+
+如果遇到类似 `Object is of type 'unknown'` 的错误，这表示TypeScript无法推断对象类型。解决方法：
+
+1. 在catch块中为error参数添加明确的类型注解，如 `catch (error: any)`
+2. 在使用error对象属性前进行类型检查
+3. 使用可选链操作符（?.）或空值合并操作符（||）提供默认值
+
 ### Base64编码错误
 
 如果遇到 `InvalidCharacterError: Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded.` 错误，这是因为WebAuthn使用的是base64url编码而不是标准的base64编码。

@@ -37,12 +37,12 @@ export class AppComponent implements OnInit {
     try {
       const credential = await this.webauthnService.register(this.username);
       if (credential) {
-        await this.authService.verifyRegistration(this.username, credential).toPromise();
+        await firstValueFrom(this.authService.verifyRegistration(this.username, credential));
         this.message = '注册成功！';
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Registration error:', error);
-      this.message = '注册失败: ' + (error instanceof Error ? error.message : '未知错误');
+      this.message = '注册失败: ' + (error?.message || '未知错误');
     }
   }
 
@@ -64,9 +64,9 @@ export class AppComponent implements OnInit {
           this.message = '登录验证失败';
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login error:', error);
-      this.message = '登录失败: ' + (error instanceof Error ? error.message : '未知错误');
+      this.message = '登录失败: ' + (error?.message || '未知错误');
     }
   }
 

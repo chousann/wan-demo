@@ -23,10 +23,9 @@
       "dom"
     ],
     "useDefineForClassFields": false,
-    "types": [
-      "jasmine"
-    ],
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

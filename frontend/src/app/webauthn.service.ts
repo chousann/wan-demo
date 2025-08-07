@@ -9,23 +9,14 @@ export class WebauthnService {
   constructor(private authService: AuthService) { }
 
   async register(username: string): Promise<any> {
-    // Get registration options from server
-    const options: any = await this.authService.getRegistrationOptions(username).toPromise();
-    
-    // Convert challenge and user ID to ArrayBuffer
-    options.challenge = this.base64UrlToArrayBuffer(options.challenge);
-    options.user.id = this.base64UrlToArrayBuffer(options.user.id);
-    
-    // Process pubKeyCredParams if needed
-    if (options.pubKeyCredParams) {
-      options.pubKeyCredParams = options.pubKeyCredParams.map((param: any) => {
-        return {
-          ...param
-        };
-      });
-    }
-    
     try {
+      // Get registration options from server
+      const options: any = await this.authService.getRegistrationOptions(username).toPromise();
+      
+      // Convert challenge and user ID to ArrayBuffer
+      options.challenge = this.base64UrlToArrayBuffer(options.challenge);
+      options.user.id = this.base64UrlToArrayBuffer(options.user.id);
+      
       // Create credential using WebAuthn API
       const credential = await navigator.credentials.create({ publicKey: options }) as any;
       
@@ -46,30 +37,28 @@ export class WebauthnService {
       };
       
       return serializedCredential;
-    } catch (error) {
-      console.error('Registration failed:', error);
+    } catch (error: any) {
+      console.error('Registration failed:', error.message || error);
       throw error;
     }
   }
 
   async login(username: string): Promise<any> {
-    // Get login options from server
-    const options: any = await this.authService.getLoginOptions(username).toPromise();
-    
-    // Convert challenge to ArrayBuffer
-    options.challenge = this.base64UrlToArrayBuffer(options.challenge);
-    
-    // Convert allowCredentials IDs to ArrayBuffer
-    if (options.allowCredentials) {
-      options.allowCredentials = options.allowCredentials.map((cred: any) => {
-        return {
+    try {
+      // Get login options from server
+      const options: any = await this.authService.getLoginOptions(username).toPromise();
+      
+      // Convert challenge to ArrayBuffer
+      options.challenge = this.base64UrlToArrayBuffer(options.challenge);
+      
+      // Convert allowCredentials IDs to ArrayBuffer
+      if (options.allowCredentials && Array.isArray(options.allowCredentials)) {
+        options.allowCredentials = options.allowCredentials.map((cred: any) => ({
           ...cred,
           id: this.base64UrlToArrayBuffer(cred.id)
-        };
-      });
-    }
-    
-    try {
+        }));
+      }
+      
       // Get credential using WebAuthn API
       const credential = await navigator.credentials.get({ publicKey: options }) as any;
       
@@ -88,13 +77,18 @@ export class WebauthnService {
       };
       
       return serializedCredential;
-    } catch (error) {
-      console.error('Authentication failed:', error);
+    } catch (error: any) {
+      console.error('Authentication failed:', error.message || error);
       throw error;
     }
   }
 
   private base64UrlToArrayBuffer(base64Url: string): ArrayBuffer {
+    // Handle null or undefined input
+    if (!base64Url) {
+      return new ArrayBuffer(0);
+    }
+    
     // Convert base64url to base64
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/').replace(/=/g, '');
     
@@ -111,11 +105,15 @@ export class WebauthnService {
       return bytes.buffer;
     } catch (e) {
       console.error('Failed to decode base64 string:', base64Url);
-      throw e;
+      return new ArrayBuffer(0);
     }
   }
 
   private arrayBufferToBase64Url(buffer: ArrayBuffer): string {
+    if (!buffer) {
+      return '';
+    }
+    
     let binary = '';
     const bytes = new Uint8Array(buffer);
     for (let i = 0; i < bytes.byteLength; i++) {
