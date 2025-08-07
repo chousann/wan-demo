@@ -50,7 +50,7 @@ app.get('/auth/register-options', (req, res) => {
     timeout: 60000,
     attestation: 'none',
     authenticatorSelection: {
-      authenticatorAttachment: 'platform',
+      authenticatorAttachment: undefined,
       residentKey: 'preferred',
       userVerification: 'preferred'
     }

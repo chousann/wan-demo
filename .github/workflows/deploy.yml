@@ -15,5 +15,6 @@ jobs:
     - id: build-publish
       uses: bitovi/github-actions-angular-to-github-pages@v1.0.0
       with:
-        path: frontend/dist/webauthn-frontend/browser                            # default
+        install_command: cd frontend & npm install
+        path: frontend/dist/webauthn-demo                            # default
         build_command: cd frontend & npm run build # -- --base-href=/${{ github.event.repository.name }}/ # default
