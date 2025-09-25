@@ -17,4 +17,4 @@ jobs:
       with:
         install_command: cd frontend && npm install && ls
         path: dist/webauthn-demo                            # default
-        build_command: cd frontend && npm run build && ls && cd ../ # -- --base-href=/${{ github.event.repository.name }}/ # default
+        build_command: npm run build && ls # -- --base-href=/${{ github.event.repository.name }}/ # default
