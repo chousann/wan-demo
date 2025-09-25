@@ -36,7 +36,7 @@ app.get('/auth/register-options', (req, res) => {
     challenge,
     rp: {
       name: 'WebAuthn Demo',
-      id: 'wan-demo.cnss.eu.org'
+      id: 'chousann.github.io'
     },
     user: {
       id: Buffer.from(username).toString('base64url'),
@@ -95,7 +95,7 @@ app.get('/auth/login-options', (req, res) => {
   if (!username) {
     return res.json({
       challenge,
-      rpId: 'wan-demo.cnss.eu.org',
+      rpId: 'chousann.github.io',
       timeout: 60000,
       allowCredentials: undefined,
       userVerification: 'preferred'
@@ -112,7 +112,7 @@ app.get('/auth/login-options', (req, res) => {
   
   res.json({
     challenge,
-    rpId: 'wan-demo.cnss.eu.org',
+    rpId: 'chousann.github.io',
     timeout: 60000,
     allowCredentials: users.get(username).credentials.map(cred => ({
       id: cred.id,
